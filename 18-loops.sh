@@ -38,7 +38,6 @@ do
   if [ $> -ne 0 ]; then
        dnf install $package -y &>>$LOG_FILE
        VALIDATE $? "$package"
-
   else
    echo -e " $package already installed ... $Y SKIPPING $N"
    fi
