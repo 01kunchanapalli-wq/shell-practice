@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+trap 'echo "There is an error in $LINENO. command is $BASH_COMMAND"'  ERR
+
 USERID=$(id -u)
 R="\e[31m"
 G="\e[32m"
@@ -22,69 +24,38 @@ if [ $USERID -ne 0 ]; then
    exit 1 # failure is other than 0
    fi
 
-   VALIDATE(){
-    if [ $1 -ne 0 ]; then
-    echo -e"$2 ... $R Failure $N" | tee -a $LOG_FILE
-    exit 1
-else
-    echo -e "$2 ... $G SUCCESS $N" | tee -a $LOG_FILE
-fi
-}
+   
 
 ####Node Js ####
 dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $? "Disabling NodeJS"
 dnf module enable nodejs:20 -y &>>$LOG_FILE
-VALIDATE $? "Enabling NodeJS 20"
 dnf install nodejs -y &>>$LOG_FILE
-VALIDATE $? "Installing NodeJS"
 
 id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]; then
 useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-VALIDATE $? "Creating system user"
 else 
   echo -e "user already exist ... $Y SKIPPING $N"
 fi 
 
 mkdir -p /app
-VALIDATE $? "Creating app directory"
-
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
-VALIDATE $? "Downloading catalogue application"
-
-cd /app 
-VALIDATE $? "Changing to app directory"
-
+cd /app
 rm -rf /app/*
-VALIDATE $? "Removing existing code"
-
 unzip /tmp/catalogue.zip &>>$LOG_FILE
-VALIDATE $? "unzip catalogue"
 
 npm install &>>$LOG_FILE
-VALIDATE $? "Install dependencies"
-
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
-VALIDATE $? "Copy systemctl service"
-
 systemctl daemon-reload
 systemctl enable catalogue &>>$LOG_FILE
-VALIDATE $? "Enable catalogue"
 
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-VALIDATE $? "Copy mongo repo"
-
-dnf install mongodb-mongosh -y &>>$LOG_FILE
-VALIDATE $? "Install MongoDB client"
-
+dnf install mongodb-mongoshshsh -y &>>$LOG_FILE
 INDEX=$(mongosh mongodb.ramlabs.online --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
 if [ $INDEX -le 0 ]; then 
 mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
-VALIDATE $? "Load catalogue products"
 else
  echo -e "Catalogue products already loaded ...$Y SKIPPING $N"
  fi
 
 systemctl restart catalogue
-VALIDATE $? "Restarted catalogue"
