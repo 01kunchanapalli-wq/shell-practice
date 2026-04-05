@@ -52,8 +52,11 @@ VALIDATE $? "Changing to app directory"
 rm -rf /app/*
 VALIDATE $? "Removing existing code"
 
+dnf install unzip -y &>>$LOG_FILE
+VALIDATE $? "Installing unzip"
+
 unzip /tmp/Shipping.zip &>>$LOG_FILE
-VALIDATE $? "unzip Shipping"
+VALIDATE $? "Unzipping Shipping"
 
 mvn clean package &>>$LOG_FILE
 mv target/shipping-1.0.jar shipping.jar
