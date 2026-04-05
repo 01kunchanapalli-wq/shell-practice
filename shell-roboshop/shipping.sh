@@ -44,7 +44,7 @@ mkdir -p /app
 VALIDATE $? "Creating app directory"
 
 curl -o /tmp/Shipping.zip https://roboshop-artifacts.s3.amazonaws.com/Shipping-v3.zip &>>$LOG_FILE
-VALIDATE $? "Downloading Shipping application"
+VALIDATE $? "Downloading shipping application"
 
 cd /app 
 VALIDATE $? "Changing to app directory"
@@ -52,8 +52,8 @@ VALIDATE $? "Changing to app directory"
 rm -rf /app/*
 VALIDATE $? "Removing existing code"
 
-unzip /tmp/shipping.zip &>> $LOG_FILE
-VALIDATE $? "unzip Shipping"
+unzip /tmp/shipping.zip &>>$LOG_FILE
+VALIDATE $? "unzip shipping"
 
 mvn clean package &>>$LOG_FILE
 mv target/shipping-1.0.jar shipping.jar
