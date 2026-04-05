@@ -13,6 +13,7 @@ MONGODB_HOST=mongodb.ramlabs.online
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 MYSQL_HOST=mysql.ramlabs.online
 mkdir -p $LOGS_FOLDER
+
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
 if [ $USERID -ne 0 ]; then
