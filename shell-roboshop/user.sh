@@ -71,5 +71,5 @@ systemctl enable user &>>$LOG_FILE
 VALIDATE $? "Enable user"
 
 
-systemctl restart catalogue
-VALIDATE $? "Restart catalogue"
+systemctl restart user
+VALIDATE $? "Restarted user"
