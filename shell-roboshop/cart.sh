@@ -71,5 +71,5 @@ systemctl enable cart &>>$LOG_FILE
 VALIDATE $? "Enable cart"
 
 
-systemctl restart catalogue
-VALIDATE $? "Restarted catalogue"
+systemctl restart cart
+VALIDATE $? "Restarted cart"
