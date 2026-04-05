@@ -72,4 +72,4 @@ VALIDATE $? "Enable user"
 
 
 systemctl restart catalogue
-VALIDATE $? "Restarted catalogue"
+VALIDATE $? "Restart catalogue"
